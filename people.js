@@ -3,7 +3,7 @@ var sunlightApiKey = 'c7da72ec53894f039491c87023661f8e';
 var openSecretsApiKey = '35776fd4c0bb1d6f8153182389162f86';
 var sunlightLegislatorLocateUrl = 'http://congress.api.sunlightfoundation.com/legislators/locate/';
 
-function People(zip) {
+function People(zip, useOpenSecretsApi = false) {
   this.sunlightQuery = {
     apikey: sunlightApiKey,
     zip: zip
@@ -11,7 +11,9 @@ function People(zip) {
   this.callSunlightApi();
   this.addPortraits();
   this.addAges();
-  this.addIndustries();
+  if(useOpenSecretsApi){
+    this.addIndustries();
+  }
 }
 
 People.prototype.saveResponse = function saveResponse(response) {
@@ -77,4 +79,15 @@ People.prototype.addIndustries = function addIndustries(){
 People.prototype.generateOSIndUrl = function generateOSIndUrl(cid){
   var currentCycle = new Date().getFullYear();
   return 'http://www.opensecrets.org/api/?method=candIndustry&cid=' + cid + '&cycle=' + currentCycle + '&apikey=' + openSecretsApiKey;
+}
+
+People.prototype.addBlurbs = function addBlurbs(){
+  _forEach(this.people, function(person){
+    person.generateBlurb();
+  });
+}
+
+People.prototype.generateBlurb() = function generateBlurb(){
+  var result = '';
+  //result +=
 }
