@@ -11,7 +11,6 @@
 
   <link rel="stylesheet" type="text/css" href="reset.css" />
   <link rel="stylesheet" type="text/css" href="css.css" />
-  <link rel="stylesheet" type="text/css" href="swipe.css" />
   <link rel="stylesheet" type="text/css" href="animate.css" />
 
   <title>Who The Hell? What The Hell</title>
@@ -20,44 +19,52 @@
 
   <div class="main">
 
-    <div class="header">
-      Whothehellwhatthehell?
-    </div>
+    <div class="header">Whothehellwhatthehell?</div>
 
-    <div>
-      <div class="main-content">
-        <div class="profile-summary shadow">
-          <div class="profile-image-wrapper">
-            <img class="profile-image" src="images/face.jpeg" />
+    <div class="main-content small-version">
+      <div class="profile-summary">
+        <div class="profile-image-wrapper">
+          <img class="profile-image" src="images/face.jpeg" />
+        </div>
+        <div class="bio-summary">
+          <div>
+            Joseph Crowley, 57
           </div>
-          <div class="bio-summary">
-            <div>
-              Joseph Crowley, 57
-            </div>
-            <div>
-              Representative
-            </div>
+          <div>
+            Representative
           </div>
-          <div style="">
-            Likes: oil industry, guns
-            Dislikes: smartphone cameras
-          </div>
+        </div>
+        <div class="extended-bio">
+          Likes: oil industry, guns
+          Dislikes: smartphone cameras
         </div>
       </div>
     </div>
 
-    <div class="controls">
-      <button class="no-button">
+    <div class="control-panel">
+      <button class="no-button large-button">
         <div>
           <img src="images/no.png" />
         </div>
       </button>
-      <button class="yes-button">
+      <button class="yes-button large-button">
         <div>
           <img src="images/yes.png" />
         </div>
       </button>
     </div>
+
+    <button class="no-button small-button hidden">
+      <div>
+        <img src="images/no.png" />
+      </div>
+    </button>
+
+    <button class="yes-button small-button hidden">
+      <div>
+        <img src="images/yes.png" />
+      </div>
+    </button>
 
   </div>
 
