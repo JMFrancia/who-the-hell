@@ -24,6 +24,7 @@ People.prototype.callSunlightApi = function callSunlightApi() {
     url: sunlightLegislatorLocateUrl,
     dataType: 'json',
     data: this.query,
+    async: false,
     success: function(response) {
       this.saveResponse(response);
     }.bind(this)
@@ -31,20 +32,28 @@ People.prototype.callSunlightApi = function callSunlightApi() {
 };
 
 People.prototype.addPortraits = function addPortraits(){
-  for(person in this.people){
+  _.forEach(this.people, function(person){
     person.portrait = "https://www.govtrack.us/data/photos/" + person.govtrack_id + ".jpeg";
-  }
+  });
 }
 
 People.prototype.addAges = function addAges(){
   var currentDate = new Date();
-  for(person in this.people){
-    debugger;
+  _.forEach(this.people, function(person){
     var bday = person.birthday.split('-');
-    var birthday = new Date(bday[0], bday[1], bday[2]);
-    var age = (currentDate - birthday).getFullYear();
+    var birthYear = bday[0];
+    var birthMonth = bday[1];
+    var birthDay = bday[2];
+    var age = currentDate.getFullYear() - birthYear;
+    if(currentDate.getMonth() < birthMonth - 1){
+      if(currentDate.getDate() < birthDay - 1){
+        age--;
+      }
+    }
     person.age = age;
-  }
+    console.log(person.birthday);
+    console.log(age);
+  });
 }
 
 People.prototype.addIndustries = function addIndustries(){}
