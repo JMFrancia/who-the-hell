@@ -2,7 +2,7 @@
 var sunlightApiKey = 'c7da72ec53894f039491c87023661f8e';
 var sunlightLegislatorLocateUrl = 'http://congress.api.sunlightfoundation.com/legislators/locate/';
 
-function Sunlight(zip) {
+function People(zip) {
   this.query = {
     apikey: sunlightApiKey,
     zip: zip
@@ -10,11 +10,11 @@ function Sunlight(zip) {
   this.getPeople();
 }
 
-Sunlight.prototype.saveResponse = function saveResponse(response) {
+People.prototype.saveResponse = function saveResponse(response) {
   this.people = response.results;
 };
 
-Sunlight.prototype.getPeople = function getPeople() {
+People.prototype.callSunlightApi = function callSunlightApi() {
   $.ajax({
     type: 'GET',
     url: sunlightLegislatorLocateUrl,
