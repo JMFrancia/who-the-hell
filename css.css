@@ -1,0 +1,154 @@
+body {
+  font-family: arial;
+}
+
+img {
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.main {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.header {
+  width: 100%;
+  height: 150px;
+  font-size: 80px;
+  line-height: 150px;
+  margin-left: 20px;
+}
+
+.main-content.small-version {
+  height: calc(100% - 550px);
+}
+
+.main-content {
+  width: 100%;
+  background: white;
+  position: relative;
+}
+
+.control-panel {
+  width: 100%;
+  height: 400px;
+  background: white;
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.control-panel > div {
+  display: inline-block;
+}
+
+button {
+  border: none;
+  outline: none;
+  border-radius: 50%;
+  background: #E1E1E1;
+  position: relative;
+}
+
+button > div {
+  border-radius: 50%;
+  width: 80%;
+  height: 80%;
+  background: white;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 10%;
+  left: 10%;
+}
+
+.large-button {
+  width: 300px;
+  height: 300px;
+}
+
+.small-button {
+  width: 150px;
+  height: 150px;
+  position: absolute;
+  transition: 1s;
+  bottom: 20px;
+}
+
+.small-button:not(.hidden) {
+  transition-delay: .5s;
+}
+
+.small-button img {
+  width: 60px;
+  height: 60px;
+}
+
+.no-button.large-button {
+  margin-right: 50px;
+}
+
+.yes-button.large-button {
+  margin-left: 50px;
+}
+
+.no-button.small-button.hidden {
+  left: -150px;
+}
+
+.yes-button.small-button.hidden {
+  right: -150px;
+}
+
+.no-button.small-button {
+  left: 200px;
+}
+
+.yes-button.small-button {
+  right: 200px;
+}
+
+.profile-summary {
+}
+
+.main-content.small-version .profile-summary {
+  box-shadow: 0 5px 10px #DCDCDC;
+  border-radius: 10px;
+  width: 92%;
+  height: 96%;
+  margin: 0 4% 5% 4%;
+}
+
+.main-content.small-version .profile-image-wrapper {
+  height: calc(100% - 100px);
+}
+
+.profile-image-wrapper {
+  width: 100%;
+}
+
+.profile-image {
+  height: 100%;
+  width: 100%;
+  /*max-height: 100%;*/
+  /*max-width: 100%;*/
+}
+
+.bio-summary {
+  width: 100%;
+  height: 100px;
+  font-size: 50px;
+}
+
+.extended-bio {
+  display: none;
+  font-size: 50px;
+}
