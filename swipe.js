@@ -1,48 +1,64 @@
+var currentProfile = null;
+
 $(document).ready(function onDocumentReady() {
 
-  people.forEach(function addProfile(profile) {
-    console.log("sdffsdamfadsf");
+  addPeople();
+
+  currentProfile = $(".main-content").children().last();
+
+  addClickHandlers();
+
+});
+
+function addPeople() {
+
+  var getProfileHTML = getProfileTpl();
+
+  people.forEach(function addPerson(profile, index, arr) {
+
+    var profileHTML = getProfileHTML(profile);
+
+    var profileEl = $(profileHTML).toggle(index === arr.length - 1);
+
+    $(".main-content").append(profileEl);
+
   });
 
+}
+
+function addEventHandlers() {
+
   $(".no-button").on("click", function() {
-    getMainContentElement().addClass("animated rotateOutUpLeft");
-    // dislikePerson.call(getMainContentElement());
+    dislikePerson(currentProfile);
+    currentProfile = getNextProfile();
   });
 
   $(".yes-button").on("click", function() {
-    getMainContentElement().addClass("animated rotateOutUpRight");
-    // likePerson.call(getMainContentElement());
+    likePerson(currentProfile);
+    currentProfile = getNextProfile();
   });
-
-  // $(".no-button").on("click", dislikePerson);
-
-  // $(".yes-button").on("click", likePerson);
 
   $(".main-content").on("click", expandProfile);
 
   $(".main-content").on("swiperight", dislikePerson);
+  // $(".no-button").on("click", dislikePerson);
 
   $(".main-content").on("swipeleft", likePerson);
-
-});
-
-function likePerson() {
-
-  $(this)
-    .addClass('rotate-right')
-    .delay(700)
-    .fadeOut(1);
-
-  // if ( $(this).is(':last-child') ) {
-  //   $('.main-content:nth-child(1)').removeClass ('rotate-left rotate-right').fadeIn(300);
-  // } else {
-  //   $(this).next().removeClass('rotate-left rotate-right').fadeIn(400);
-  // }
+  // $(".yes-button").on("click", likePerson);
 
 }
 
-function getMainContentElement() {
-  return $(".main-content");
+function getNextProfile() {
+
+  return currentProfile.prev().fadeIn(500);
+}
+
+function likePerson() {
+  currentProfile.addClass("animated rotateOutUpRight liked");
+}
+
+function dislikePerson() {
+  currentProfile.addClass("animated rotateOutUpLeft disliked");
 }
 
 function expandProfile() {
@@ -59,37 +75,30 @@ function expandProfile() {
   $(".small-button")
     .removeClass("hidden");
 
-  // $(".no-button.small-button")
-  //   .removeClass("slideOutLeft")
-  //   .addClass("slideInLeft");
-  //
-  // $(".yes-button.small-button")
-  //   .removeClass("slideOutRight")
-  //   .addClass("slideInRight");
-
 }
 
-function dislikePerson() {
-
-  $(this)
-    .addClass('rotate-left')
-    .delay(700)
-    .fadeOut(1);
-
-  // if ( $(this).is(':last-child') ) {
-  //   $('.main-content:nth-child(1)').removeClass ('rotate-left rotate-right').fadeIn(300);
-  // } else {
-  //   $(this).next().removeClass('rotate-left rotate-right').fadeIn(400);
-  // }
-
+function getProfileTpl() {
+  var profileTplStr = [
+    '<div class="profile-summary">',
+      '<div class="profile-image-wrapper">',
+      // '<img class="profile-image" src="<%= imageURL %>" />',
+        '<img class="profile-image" src="images/face.jpeg" />',
+      '</div>',
+      '<div class="bio-summary">',
+        '<div>',
+          '<%= first_name %>&nbsp;<%= last_name %>, <%= age %>',
+        '</div>',
+        '<div>',
+          '<%= chamber %>',
+        '</div>',
+      '</div>',
+      '<div class="extended-bio"></div>',
+    '</div>'].join('');
+  return _.template(profileTplStr);
 }
-
-
-
-
-
-
+// name, age, position, imageURL
 var people = [{
+  age: 63,
   bioguide_id: "S000148",
   birthday: "1950-11-23",
   chamber: "senate",
@@ -126,6 +135,7 @@ var people = [{
   website: "http://www.schumer.senate.gov",
   youtube_id: "SenatorSchumer"
 }, {
+  age: 67,
   bioguide_id: "M000087",
   birthday: "1946-02-19",
   chamber: "house",
@@ -159,6 +169,7 @@ var people = [{
   website: "http://maloney.house.gov",
   youtube_id: null
 }, {
+  age: 57,
   bioguide_id: "G000555",
   birthday: "1966-12-09",
   chamber: "senate",

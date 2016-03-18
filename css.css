@@ -81,10 +81,12 @@ button > div {
   position: absolute;
   transition: 1s;
   bottom: 20px;
+  transition-delay: .5s;
 }
 
-.small-button:not(.hidden) {
-  transition-delay: .5s;
+.small-button.hidden {
+  transition: .2s;
+  transition-delay: .1s;
 }
 
 .small-button img {
@@ -117,6 +119,10 @@ button > div {
 }
 
 .profile-summary {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 .main-content.small-version .profile-summary {
