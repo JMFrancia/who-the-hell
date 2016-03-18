@@ -140,14 +140,14 @@ button > div {
 
 .profile-summary {
   position: absolute;
+  margin: 0 4% 5% 4%;
+  width: 92%;
+  height: 96%;
 }
 
 .main-content.small-version .profile-summary {
   box-shadow: 0 5px 10px #DCDCDC;
   border-radius: 10px;
-  width: 92%;
-  height: 96%;
-  margin: 0 4% 5% 4%;
 }
 
 .main-content.small-version .profile-image-wrapper {
@@ -156,6 +156,8 @@ button > div {
 
 .profile-image-wrapper {
   width: 100%;
+  text-align: center;
+  height: 900px;
 }
 
 .profile-image {

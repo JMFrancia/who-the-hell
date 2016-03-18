@@ -54,8 +54,8 @@ function addPeople(people) {
 }
 
 function addProfileEventHandlers($profile) {
-  $profile.on("swiperight", dislikePerson);
-  $profile.on("swipeleft", likePerson);
+  $profile.on("swiperight", likePerson);
+  $profile.on("swipeleft", dislikePerson);
   $profile.on("click", "img", function onClickProfileSummary() {
     expandProfile($profile);
   });
@@ -96,15 +96,17 @@ function getNextProfile($profile) {
 }
 
 function likePerson() {
+  $currentProfile.liked = true;
   $currentProfile
-    .addClass("animated rotateOutUpLeft liked")
+    .addClass("animated rotateOutUpRight liked")
     .hide(1000);
   $currentProfile = getNextProfile($currentProfile);
 }
 
 function dislikePerson() {
+  $currentProfile.liked = false;
   $currentProfile
-    .addClass("animated rotateOutUpRight disliked")
+    .addClass("animated rotateOutUpLeft disliked")
     .hide(1000);
   $currentProfile = getNextProfile($currentProfile);
 }
