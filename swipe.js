@@ -47,6 +47,8 @@ function addProfileEventHandlers($profile) {
 function addEventHandlers() {
 
   $(".start-button").click(function onStartButtonClick() {
+    var zipCode = $('#zip-code-input');
+    console.log(zipCode);
     $(".splash").fadeOut(300);
     $(".main").fadeIn(300);
   });
