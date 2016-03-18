@@ -1,63 +1,66 @@
 
-var currentProfile = null;
+var $currentProfile = null;
 
-var $controlPanel = null;
+var $controlPanel, $smallButtons, $mainContent, $profiles;
 
 $(document).ready(function onDocumentReady() {
 
   $controlPanel = $(".control-panel");
+  $smallButtons = $(".small-button");
+  $mainContent = $(".main-content");
 
-  var hasPeople = addPeople(people)
-
-  if (hasPeople) {
-    addEventHandlers();
-    currentProfile = $(".main-content").children().last();
+  if (addPeople(people) === true) {
+    $currentProfile = $mainContent.children().last();
   } else {
     hideControlPanel();
   }
 
+  addEventHandlers();
+
 });
 
-function addPeople(profileArr) {
-
-  if (!profileArr.length) {
+function addPeople(people) {
+  if (!people.length) {
     return false;
   }
-
-  var getProfileHTML = getProfileTpl();
-
-  profileArr.forEach(function addPerson(profile, index, arr) {
-
+  var lastIndex = people.length - 1;
+  var getProfileHTML = getProfileTplFn();
+  people.forEach(function addPerson(profile, index) {
     var profileHTML = getProfileHTML(profile);
-
-    var profileEl = $(profileHTML).toggle(index === arr.length - 1);
-
-    $(".main-content").append(profileEl);
-
+    $(profileHTML)
+      .toggle(index === lastIndex) // only show the last person
+      .appendTo($mainContent);
   });
-
   return true;
-
 }
 
 function addEventHandlers() {
 
-  $(".no-button").on("click", function() {
-    dislikePerson(currentProfile);
-    currentProfile = getNextProfile();
+  $(".start-button").click(function onStartButtonClick() {
+    $(".splash").fadeOut(300);
+    $(".main").fadeIn(300);
   });
 
-  $(".yes-button").on("click", function() {
-    likePerson(currentProfile);
-    currentProfile = getNextProfile();
+  $(".no-button").on("click", function onNoButtonClick() {
+    dislikePerson($currentProfile);
+    $currentProfile = getNextProfile();
   });
 
-  $(".main-content").on("click", expandProfile);
+  $(".yes-button").on("click", function onYesButtonClick() {
+    likePerson($currentProfile);
+    $currentProfile = getNextProfile();
+  });
 
-  $(".main-content").on("swiperight", dislikePerson);
+  $(".profile-summary").on("click", "img", function onClickProfileSummary() {
+    expandProfile($currentProfile);
+  });
+
+  // $profileImages.on("click", expandProfile);
+
+  $mainContent.on("swiperight", dislikePerson);
   // $(".no-button").on("click", dislikePerson);
 
-  $(".main-content").on("swipeleft", likePerson);
+  $mainContent.on("swipeleft", likePerson);
   // $(".yes-button").on("click", likePerson);
 
 }
@@ -66,7 +69,7 @@ function hideControlPanel() {
   $controlPanel
     .removeClass("slideInUp")
     .addClass("animated slideOutDown");
-  $(".small-button")
+  $smallButtons
     .addClass("hidden");
 }
 
@@ -79,7 +82,8 @@ function showControlPanel() {
 }
 
 function getNextProfile() {
-  var nextProfile = currentProfile.prev().fadeIn(500);
+  $currentProfile.off();
+  var nextProfile = $currentProfile.prev().fadeIn(500);
   if (nextProfile.index() === 0) {
     console.log("No people left.");
     hideControlPanel();
@@ -90,44 +94,31 @@ function getNextProfile() {
 }
 
 function likePerson() {
-  currentProfile.addClass("animated rotateOutUpRight liked");
+  $currentProfile.hide();
+  // $currentProfile.addClass("animated rotateOutUpRight liked");
 }
 
 function dislikePerson() {
-  currentProfile.addClass("animated rotateOutUpLeft disliked");
+  $currentProfile.hide();
+  // $currentProfile.addClass("animated rotateOutUpLeft disliked");
 }
 
-function expandProfile() {
-
+function expandProfile($profile) {
   hideControlPanel();
-
-  $(".extended-bio")
-    .fadeIn(1000);
-
-  $(".main-content")
-    .removeClass("small-version");
-
-  $(".small-button")
-    .removeClass("hidden");
-
+  $profile.find("extended-bio").fadeIn(1000);
+  $mainContent.removeClass("small-version");
+  $smallButtons.removeClass("hidden");
 }
 
 function unexpandProfile() {
-
   showControlPanel();
-
-  $(".extended-bio")
-    .fadeOut(500);
-
-  $(".main-content")
-    .addClass("small-version");
-
-  $(".small-button")
-    .addClass("hidden");
-
+  // $extendedBio
+    // .fadeOut(500);
+  $mainContent.addClass("small-version");
+  $smallButtons.addClass("hidden");
 }
 
-function getProfileTpl() {
+function getProfileTplFn() {
   var profileTplStr = [
     '<div class="profile-summary">',
       '<div class="profile-image-wrapper">',
@@ -145,9 +136,26 @@ function getProfileTpl() {
       '<div class="extended-bio">',
         '<%= blurb %>',
       '</div>',
-    '</div>'].join('');
+    '</div>'
+  ].join('');
   return _.template(profileTplStr);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 var people = [{
   age: 63,

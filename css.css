@@ -8,34 +8,44 @@ img {
 }
 
 .main {
-  position: fixed;
+  /*position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
-  left: 0;
+  left: 0;*/
 }
 
 .header {
-  width: 100%;
-  height: 150px;
-  font-size: 80px;
-  line-height: 150px;
-  margin-left: 20px;
-}
-
-.main-content.small-version {
-  height: calc(100% - 550px);
+  z-index: 5;
+  height: 100px;
+  font-size: 70px;
+  line-height: 100px;
+  padding-left: 20px;
+  position: fixed;
+  background: white;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 .main-content {
   width: 100%;
   background: white;
   position: absolute;
+  top: 0;
+}
+
+.main-content.small-version {
+  bottom: 400px;
 }
 
 .splash {
   width: 100%;
-  height: 100%;
+  position: absolute;
+  top: 100px;
+  right: 0;
+  bottom: 0;
+  left: 0;
   text-align: center;
   font-size: 60px;
 }
@@ -44,8 +54,10 @@ img {
   width: 100%;
   height: 400px;
   background: white;
-  position: absolute;
+  position: fixed;
+  right: 0;
   bottom: 0;
+  left: 0;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -85,15 +97,14 @@ button > div {
 .small-button {
   width: 150px;
   height: 150px;
-  position: absolute;
+  position: fixed;
   transition: 1s;
   bottom: 20px;
-  transition-delay: .5s;
+  transition-delay: .2s;
 }
 
 .small-button.hidden {
   transition: .2s;
-  transition-delay: .1s;
 }
 
 .small-button img {
@@ -126,10 +137,6 @@ button > div {
 }
 
 .profile-summary {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
 }
 
 .main-content.small-version .profile-summary {
@@ -141,7 +148,7 @@ button > div {
 }
 
 .main-content.small-version .profile-image-wrapper {
-  height: calc(100% - 100px);
+  /*height: calc(100% - 100px);*/
 }
 
 .profile-image-wrapper {
@@ -162,6 +169,7 @@ button > div {
 .extended-bio {
   display: none;
   font-size: 50px;
+  padding: 40px 50px 200px;
 }
 
 .nobody-left {
@@ -170,12 +178,14 @@ button > div {
   text-align: center;
 }
 
+.start-text,
 .nobody-left-text {
   font-size: 60px;
   margin: 200px auto;
 }
 
-.nobody-left button {
+.start-button,
+.result-button {
   width: 400px;
   height: 400px;
   font-size: 100px;
