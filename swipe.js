@@ -22,12 +22,12 @@ function onStartButtonClick() {
     return;
   }
   console.log(zipCode);
-  people = new People(zipCode, false).people;
+  people = new People(zipCode, false);
   browsePeople();
 }
 
 function browsePeople() {
-  if (addPeople(people) === true) {
+  if (addPeople(people.people) === true) {
     $currentProfile = $mainContent.children().last();
     addProfileEventHandlers($currentProfile);
     addButtonEventHandlers();
@@ -38,13 +38,13 @@ function browsePeople() {
   }
 }
 
-function addPeople(people) {
-  if (!people.length) {
+function addPeople(peopleArr) {
+  if (!peopleArr.length) {
     return false;
   }
-  var lastIndex = people.length - 1;
+  var lastIndex = peopleArr.length - 1;
   var getProfileHTML = getProfileTplFn();
-  people.forEach(function addPerson(profile, index) {
+  peopleArr.forEach(function addPerson(profile, index) {
     var profileHTML = getProfileHTML(profile);
     $(profileHTML)
       .toggle(index === lastIndex) // only show the last person
@@ -56,7 +56,7 @@ function addPeople(people) {
 function addProfileEventHandlers($profile) {
   $profile.on("swiperight", likePerson);
   $profile.on("swipeleft", dislikePerson);
-  $profile.on("click", "img", function onClickProfileSummary() {
+  $profile.on("click", function onClickProfileSummary() {
     expandProfile($profile);
   });
 }
@@ -64,6 +64,34 @@ function addProfileEventHandlers($profile) {
 function addButtonEventHandlers() {
   $(".no-button").on("click", dislikePerson);
   $(".yes-button").on("click", likePerson);
+  $(".results-button").on("click", function onResultsButtonClick() {
+    populateResultsPage();
+    $(".main").fadeOut(500);
+    $(".results-page").fadeIn(500);
+  });
+}
+
+function populateResultsPage() {
+  var html = '';
+  var page = $(".results-page");
+  var getHTML = people.generateSummaryTile;
+  people.people = addLikeOrDislikedKey(people.people);
+  people.people = _.filter(people.people, function(person) {
+    return !person.liked;
+  });
+  people.people.forEach(function addResultForPerson(person) {
+    html = getHTML.call(people, person);
+    html = $(html);
+    page.append(html);
+  })
+}
+
+function addLikeOrDislikedKey(peopleArr) {
+  $(".profile-summary").each(function addKey(index, el) {
+    console.log(el);
+    peopleArr[index].liked = ($(el).attr("liked") === "true");
+  });
+  return peopleArr;
 }
 
 function hideControls() {
@@ -96,7 +124,7 @@ function getNextProfile($profile) {
 }
 
 function likePerson() {
-  $currentProfile.liked = true;
+  $currentProfile.attr("liked", true);
   $currentProfile
     .addClass("animated rotateOutUpRight liked")
     .hide(1000);
@@ -104,7 +132,7 @@ function likePerson() {
 }
 
 function dislikePerson() {
-  $currentProfile.liked = false;
+  $currentProfile.attr("liked", false);
   $currentProfile
     .addClass("animated rotateOutUpLeft disliked")
     .hide(1000);

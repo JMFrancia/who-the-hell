@@ -182,11 +182,15 @@ People.prototype.generateSummaryTile = function generateSummaryTile(person){
   var daysInOffice = this.getDayDiff(firstDay, currentDate);
   var daysLeftInOffice = this.getDayDiff(currentDate, lastDay);
 
+  var years = Math.round( (daysInOffice / 365) * 10 ) / 10;
+
   var result = '<div class="repTile">' +
+              '<div class="repTilePortraitWrapper">' +
               '<img class="repTilePortrait" src="' + person.portrait + '"></img>' +
+              '</div>' +
               '<div class="repInfo">' +
                 '<div class="repName">' + fullName + '</div>' +
-                '<div class="daysInOffice">' + daysInOffice + ' days in office</div>' +
+                '<div class="daysInOffice">' + years + ' years in office</div>' +
                 '<div class="repIcons">' +
                   '<a href="' + facebookLink + '"">' +
                     '<img class="icon" src="images/fb_icon.png"></img>' +
@@ -237,4 +241,3 @@ BlurbGenerator.prototype.getSecondLine = function getSecondLine(){
 BlurbGenerator.prototype.getThirdLine = function getThirdLine(){
   return this.conclusions[Math.floor(Math.random()*this.conclusions.length)];
 }
-

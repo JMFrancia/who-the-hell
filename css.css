@@ -40,15 +40,23 @@ img {
 }
 
 .splash {
-  width: 100%;
   position: absolute;
-  margin-top: 100px;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
+}
+
+.splash,
+.results-page {
+  width: 100%;
+  margin-top: 100px;
   text-align: center;
   font-size: 60px;
+}
+
+.results-page {
+  display: none;
 }
 
 .control-panel {
@@ -216,7 +224,7 @@ button > div {
 }
 
 .start-button,
-.result-button {
+.results-button {
   width: 400px;
   height: 400px;
   font-size: 100px;
@@ -242,4 +250,26 @@ button > div {
 
 .ui-loader {
   display: none;
+}
+
+.results-page-header {
+  padding: 60px 20px;
+}
+
+.results-page-header > p {
+  margin-bottom: 20px;
+}
+
+.repTilePortraitWrapper {
+  width: 100%;
+  height: 300px;
+}
+
+.repIcons {
+  margin: 30px;
+}
+
+.repIcons img {
+  width: 100px;
+  height: 100px;
 }
