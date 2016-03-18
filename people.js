@@ -3,7 +3,8 @@ var sunlightApiKey = 'c7da72ec53894f039491c87023661f8e';
 var openSecretsApiKey = '35776fd4c0bb1d6f8153182389162f86';
 var sunlightLegislatorLocateUrl = 'http://congress.api.sunlightfoundation.com/legislators/locate/';
 
-function People(zip, useOpenSecretsApi = false) {
+function People(zip, useOpenSecretsApi) {
+  useOpenSecretsApi = useOpenSecretsApi || false;
   this.sunlightQuery = {
     apikey: sunlightApiKey,
     zip: zip
@@ -14,6 +15,7 @@ function People(zip, useOpenSecretsApi = false) {
   if(useOpenSecretsApi){
     this.addIndustries();
   }
+  this.addBlurbs();
 }
 
 People.prototype.saveResponse = function saveResponse(response) {
@@ -82,12 +84,33 @@ People.prototype.generateOSIndUrl = function generateOSIndUrl(cid){
 }
 
 People.prototype.addBlurbs = function addBlurbs(){
-  _forEach(this.people, function(person){
-    person.generateBlurb();
+  var blurbGen = new BlurbGenerator();
+  _.forEach(this.people, function(person){
+    person.blurb = blurbGen.getFirstLine();
+    if(person.industries){
+      person.blurb += blurbGen.getSecondLine() + person.industries[0].name + ', ' +
+      person.industries[1].name + ', and ' + person.industries[2].name + '.';
+    }
   });
 }
 
-People.prototype.generateBlurb() = function generateBlurb(){
-  var result = '';
-  //result +=
+function BlurbGenerator(){
+  this.intros = [
+    "Are you the voter for me?",
+    "Looking for the constitutents of my dreams.",
+  ];
+  this.interests = [
+    "Fond of ",
+    "Enjoys receiving contributions from ",
+    "Been known to enjoy ",
+    "Turn ons include "
+  ];
+}
+
+BlurbGenerator.prototype.getFirstLine = function getFirstLine(){
+  return this.intros[Math.floor(Math.random()*this.intros.length)];
+}
+
+BlurbGenerator.prototype.getSecondLine = function getSecondLine(){
+  return this.interests[Math.floor(Math.random()*this.interests.length)];
 }
