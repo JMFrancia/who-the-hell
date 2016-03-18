@@ -185,7 +185,19 @@ button > div {
 .start-text,
 .nobody-left-text {
   font-size: 60px;
+}
+
+.start-text {
+  margin: 200px auto 50px;
+}
+
+.nobody-left-text {
   margin: 200px auto;
+}
+
+#zip-code-input {
+  font-size: 50px;
+  margin-top: 50px;
 }
 
 .start-button,
