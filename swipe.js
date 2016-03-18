@@ -9,15 +9,33 @@ $(document).ready(function onDocumentReady() {
   $smallButtons = $(".small-button");
   $mainContent = $(".main-content");
 
+  $(".start-button").click(onStartButtonClick);
+
+});
+
+function onStartButtonClick() {
+  var zipCode = $('#zip-code-input').val();
+  if (zipCode.length !== 5 || _.isNumber(zipCode *= 1) === false) {
+    $(".zip-code-message").hide();
+    $(".zip-code-warning").show();
+    return;
+  }
+  console.log(zipCode);
+  return;
+  browsePeople();
+}
+
+function browsePeople() {
   if (addPeople(people) === true) {
     $currentProfile = $mainContent.children().last();
     addProfileEventHandlers($currentProfile);
-    addEventHandlers();
+    addButtonEventHandlers();
+    $(".splash").fadeOut(300);
+    $(".main").fadeIn(300);
   } else {
-    hideControls();
+    // NOBODY TO SEE!!!!
   }
-
-});
+}
 
 function addPeople(people) {
   if (!people.length) {
@@ -35,26 +53,16 @@ function addPeople(people) {
 }
 
 function addProfileEventHandlers($profile) {
-  $profile.on("swiperight", "img", dislikePerson);
+  $profile.on("swiperight", dislikePerson);
   $profile.on("swipeleft", likePerson);
-  // $(document).on("swiperight", "img", dislikePerson);
-  // $(document).on("swipeleft", likePerson);
   $profile.on("click", "img", function onClickProfileSummary() {
     expandProfile($profile);
   });
 }
 
-function addEventHandlers() {
-
-  $(".start-button").click(function onStartButtonClick() {
-    $(".splash").fadeOut(300);
-    $(".main").fadeIn(300);
-  });
-
+function addButtonEventHandlers() {
   $(".no-button").on("click", dislikePerson);
-
   $(".yes-button").on("click", likePerson);
-
 }
 
 function hideControls() {

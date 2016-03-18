@@ -188,7 +188,7 @@ button > div {
 }
 
 .start-text {
-  margin: 200px auto 50px;
+  margin: 150px 75px 0;
 }
 
 .nobody-left-text {
@@ -198,6 +198,19 @@ button > div {
 #zip-code-input {
   font-size: 50px;
   margin-top: 50px;
+  text-align: center;
+}
+
+.zip-code-message {
+  text-align: center;
+}
+
+.zip-code-warning {
+  text-align: center;
+}
+
+.zip-code-warning > span {
+  color: red;
 }
 
 .start-button,
