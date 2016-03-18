@@ -2,37 +2,63 @@
 var sunlightApiKey = 'c7da72ec53894f039491c87023661f8e';
 var openSecretsApiKey = '35776fd4c0bb1d6f8153182389162f86';
 var sunlightLegislatorLocateUrl = 'http://congress.api.sunlightfoundation.com/legislators/locate/';
+var sunlightAllCongressUrl = 'http://congress.api.sunlightfoundation.com/legislators';
 
 function People(zip, useOpenSecretsApi) {
   useOpenSecretsApi = useOpenSecretsApi || false;
-  this.sunlightQuery = {
-    apikey: sunlightApiKey,
-    zip: zip
-  };
-  this.callSunlightApi();
-  this.addPortraits();
-  this.addAges();
-  if(useOpenSecretsApi){
-    this.addIndustries();
+  this.people = [];
+
+  if (zip) {
+    this.getDataWithZip(zip, useOpenSecretsApi);
+  } else {
+    this.getAllCongress();
   }
+
+  this.addPortraits();
+  this.addAgesAndJobs();
   this.addBlurbs();
 }
 
-People.prototype.saveResponse = function saveResponse(response) {
-  this.people = response.results;
+People.prototype.getDataWithZip = function getDataWithZip(zip, useOpenSecretsApi) {
+  var query = {
+    apikey: sunlightApiKey,
+    zip: zip
+  };
+
+  this.callSunlightApi(sunlightLegislatorLocateUrl, query);
+
+  if (useOpenSecretsApi) {
+    this.addIndustries();
+  }
 };
 
-People.prototype.callSunlightApi = function callSunlightApi() {
+People.prototype.getAllCongress = function getAllCongress() {
+  var nPages = 11;
+  var i;
+  for (i = 0; i < nPages; i++) {
+    this.callSunlightApi(sunlightAllCongressUrl, {
+      apikey: sunlightApiKey,
+      per_page: 50,
+      page: i + 1
+    });
+  }
+};
+
+People.prototype.callSunlightApi = function callSunlightApi(url, data) {
   $.ajax({
     type: 'GET',
-    url: sunlightLegislatorLocateUrl,
+    url: url,
     dataType: 'json',
-    data: this.sunlightQuery,
+    data: data,
     async: false,
     success: function(response) {
-      this.saveResponse(response);
+      this.savePeople(response.results);
     }.bind(this)
   });
+};
+
+People.prototype.savePeople = function savePeople(response) {
+  this.people = this.people.concat(response);
 };
 
 People.prototype.addPortraits = function addPortraits(){
@@ -41,7 +67,7 @@ People.prototype.addPortraits = function addPortraits(){
   });
 }
 
-People.prototype.addAges = function addAges(){
+People.prototype.addAgesAndJobs = function addAgesAndJobs(){
   var currentDate = new Date();
   _.forEach(this.people, function(person){
     var bday = person.birthday.split('-');
@@ -55,6 +81,8 @@ People.prototype.addAges = function addAges(){
       }
     }
     person.age = age;
+    person.job = person.office.indexOf('S') > -1  ? 'Senator of ' : 'Representative of District ' + person.district + ' of ';
+    person.job += person.state_name;
   });
 }
 
