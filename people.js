@@ -130,8 +130,6 @@ People.prototype.addIndustries = function addIndustries(){
           });
         });
 
-
-
           var blurbGen = new BlurbGenerator();
           person.blurb = blurbGen.getFirstLine() + ' ';
           if(person.industries){
@@ -139,8 +137,6 @@ People.prototype.addIndustries = function addIndustries(){
             person.industries[1].name + ', and ' + person.industries[2].name + '. ';
           }
           person.blurb += blurbGen.getThirdLine();
-
-
       }.bind(this)
     });
   });
@@ -170,10 +166,52 @@ People.prototype.generateBlurb = function generateBlurb(){
     this.blurb += this.getThirdLine();
 }
 
+People.prototype.generateSummaryTile = function generateSummaryTile(person){
+  var currentDate = new Date();
+  var youtubeLink = 'https://www.youtube.com/user/' + person.youtube_id;
+  var facebookLink = 'https://facebook.com/' + person.facebook_id;
+  var contactForm = person.contact_form
+
+  var website = person.website;
+  var fullName = person.first_name + ' ' + person.last_name;
+  var lastDay = person.term_end.split('-');
+      lastDay = new Date(lastDay[0], lastDay[1], lastDay[2]);
+
+  var firstDay = person.term_start.split('-');
+      firstDay = new Date(firstDay[0], firstDay[1], firstDay[2]);
+  var daysInOffice = this.getDayDiff(firstDay, currentDate);
+  var daysLeftInOffice = this.getDayDiff(currentDate, lastDay);
+
+  var result = '<div class=repTile>' +
+              '<img class=repTilePortrait src="' + person.portrait + '"></img>' +
+              '<div class=repInfo>' +
+                '<div class=repName>' + fullName + '</div>' +
+                '<div class=daysInOffice>' + daysInOffice + ' days in office</div>' +
+                '<div class=repIcons>' +
+                  '<a href=' + facebookLink + '>' +
+                    '<img class=icon src=images/fb_icon.png></img>' +
+                  '</a>' +
+                  '<a href=' + youtubeLink + '>' +
+                      '<img class=icon src=images/yt_icon.png></img>' +
+                  '</a>' +
+                  '<a href=' + contactForm + '>' +
+                    '<img class=icon src=images/email_icon.png></img>' +
+                  '</a>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+  return result;
+}
+
+
+People.prototype.getDayDiff = function getDayDiff(first, second){
+   return Math.round(Math.floor((second-first)/(1000*60*60*24)));
+}
+
 function BlurbGenerator(){
   this.intros = [
     "Are you the voter for me?",
-    "Looking for the constituent of my dreams.",
+    "Looking for the constitutents of my dreams."
   ];
   this.interests = [
     "I'm fond of ",
@@ -182,9 +220,10 @@ function BlurbGenerator(){
     "My turn ons include "
   ];
   this.conclusions = [
-    "If you're looking for a good election cycle, give me a tap!",
-    "Interested in what you see? Tap for more!",
-    "Give me a tap and let's get democratic together!"
+    "If you're looking for a good election cycle, swipe right",
+    "Interested in what you see? Swipe right for me",
+    "Give me a swipe and let's get democratic together"
+
   ]
 }
 
@@ -199,3 +238,4 @@ BlurbGenerator.prototype.getSecondLine = function getSecondLine(){
 BlurbGenerator.prototype.getThirdLine = function getThirdLine(){
   return this.conclusions[Math.floor(Math.random()*this.conclusions.length)];
 }
+
