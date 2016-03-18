@@ -3,7 +3,10 @@ var sunlightApiKey = 'c7da72ec53894f039491c87023661f8e';
 var openSecretsApiKey = '35776fd4c0bb1d6f8153182389162f86';
 var sunlightLegislatorLocateUrl = 'http://congress.api.sunlightfoundation.com/legislators/locate/';
 
-function People(zip, useOpenSecretsApi = false) {
+function People(zip, useOpenSecretsApi) {
+  if (!useOpenSecretsApi) {
+    useOpenSecretsApi = false;
+  }
   this.sunlightQuery = {
     apikey: sunlightApiKey,
     zip: zip
@@ -87,7 +90,7 @@ People.prototype.addBlurbs = function addBlurbs(){
   });
 }
 
-People.prototype.generateBlurb() = function generateBlurb(){
+People.prototype.generateBlurb = function generateBlurb(){
   var result = '';
   //result +=
 }

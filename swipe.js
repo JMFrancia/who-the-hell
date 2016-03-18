@@ -1,12 +1,19 @@
+
 var currentProfile = null;
+
+var $controlPanel = null;
 
 $(document).ready(function onDocumentReady() {
 
   addPeople();
 
+  // hideControlPanel(); // hide if there were no people found
+
+  $controlPanel = $(".control-panel");
+
   currentProfile = $(".main-content").children().last();
 
-  addClickHandlers();
+  addEventHandlers();
 
 });
 
@@ -48,9 +55,31 @@ function addEventHandlers() {
 
 }
 
-function getNextProfile() {
+function hideControlPanel() {
+  $controlPanel
+    .removeClass("slideInUp")
+    .addClass("animated slideOutDown");
+  $(".small-button")
+    .addClass("hidden");
+}
 
-  return currentProfile.prev().fadeIn(500);
+function showControlPanel() {
+  if ($controlPanel.hasClass("slideOutDown")) {
+    $controlPanel
+      .removeClass("slideOutDown")
+      .addClass("animated slideInUp");
+  }
+}
+
+function getNextProfile() {
+  var nextProfile = currentProfile.prev().fadeIn(500);
+  if (nextProfile.index() === 0) {
+    console.log("No people left.");
+    hideControlPanel();
+    return false;
+  }
+  unexpandProfile();
+  return nextProfile;
 }
 
 function likePerson() {
@@ -63,8 +92,7 @@ function dislikePerson() {
 
 function expandProfile() {
 
-  $(".control-panel")
-    .addClass("animated slideOutDown");
+  hideControlPanel();
 
   $(".extended-bio")
     .fadeIn(1000);
@@ -74,6 +102,21 @@ function expandProfile() {
 
   $(".small-button")
     .removeClass("hidden");
+
+}
+
+function unexpandProfile() {
+
+  showControlPanel();
+
+  $(".extended-bio")
+    .fadeOut(500);
+
+  $(".main-content")
+    .addClass("small-version");
+
+  $(".small-button")
+    .addClass("hidden");
 
 }
 
@@ -96,7 +139,7 @@ function getProfileTpl() {
     '</div>'].join('');
   return _.template(profileTplStr);
 }
-// name, age, position, imageURL
+
 var people = [{
   age: 63,
   bioguide_id: "S000148",
