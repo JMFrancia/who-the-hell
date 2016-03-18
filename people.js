@@ -1,8 +1,10 @@
+/* globals $, _ */
 'use strict';
 var sunlightApiKey = 'c7da72ec53894f039491c87023661f8e';
 var openSecretsApiKey = '35776fd4c0bb1d6f8153182389162f86';
 var sunlightLegislatorLocateUrl = 'http://congress.api.sunlightfoundation.com/legislators/locate/';
-var sunlightAllCongressUrl = 'http://congress.api.sunlightfoundation.com/legislators';
+var sunlightAllCongressUrl = 'http://congress.api.sunlightfoundation.com/legislators/';
+var sunlightCampaignFinanceUrl = 'http://realtime.influenceexplorer.com/api/candidates/';
 
 function People(zip, useOpenSecretsApi) {
   useOpenSecretsApi = useOpenSecretsApi || false;
@@ -63,9 +65,34 @@ People.prototype.savePeople = function savePeople(response) {
 
 People.prototype.addPortraits = function addPortraits(){
   _.forEach(this.people, function(person){
-    person.portrait = "https://www.govtrack.us/data/photos/" + person.govtrack_id + ".jpeg";
+    person.portrait = 'https://www.govtrack.us/data/photos/' + person.govtrack_id + '.jpeg';
+    this.addOpposition(person);
+  }.bind(this));
+};
+
+People.prototype.addOpposition = function addOpposition(person) {
+  $.ajax({
+    type: 'GET',
+    url: sunlightCampaignFinanceUrl,
+    dataType: 'json',
+    data: {
+      apikey: sunlightApiKey,
+      format: 'json',
+      is_incumbent: false,
+      state: person.state,
+      office: person.title.indexOf('Sen') > -1 ? 'S' : 'H',
+      district: person.district
+    },
+    async: true,
+    success: function(response) {
+      this.saveOpposition(person, response.results);
+    }.bind(this)
   });
-}
+};
+
+People.prototype.saveOpposition = function saveOpposition(person, result) {
+  person.opposition = result;
+};
 
 People.prototype.addAgesAndJobs = function addAgesAndJobs(){
   var currentDate = new Date();
@@ -81,7 +108,7 @@ People.prototype.addAgesAndJobs = function addAgesAndJobs(){
       }
     }
     person.age = age;
-    person.job = person.office.indexOf('S') > -1  ? 'Senator of ' : 'Representative of District ' + person.district + ' of ';
+    person.job = person.title.indexOf('Sen') > -1  ? 'Senator of ' : 'Representative of District ' + person.district + ' of ';
     person.job += person.state_name;
   });
 }
