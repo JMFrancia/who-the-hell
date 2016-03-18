@@ -5,6 +5,7 @@ var openSecretsApiKey = '35776fd4c0bb1d6f8153182389162f86';
 var sunlightLegislatorLocateUrl = 'http://congress.api.sunlightfoundation.com/legislators/locate/';
 var sunlightAllCongressUrl = 'http://congress.api.sunlightfoundation.com/legislators/';
 var sunlightCampaignFinanceUrl = 'http://realtime.influenceexplorer.com/api/candidates/';
+var sunlightBillUrl = 'http://congress.api.sunlightfoundation.com/bills/';
 
 function People(zip, useOpenSecretsApi) {
   useOpenSecretsApi = useOpenSecretsApi || false;
@@ -67,31 +68,64 @@ People.prototype.addPortraits = function addPortraits(){
   _.forEach(this.people, function(person){
     person.portrait = 'https://www.govtrack.us/data/photos/' + person.govtrack_id + '.jpeg';
     this.addOpposition(person);
+    this.addBills(person);
   }.bind(this));
 };
 
 People.prototype.addOpposition = function addOpposition(person) {
-  $.ajax({
-    type: 'GET',
-    url: sunlightCampaignFinanceUrl,
-    dataType: 'json',
-    data: {
-      apikey: sunlightApiKey,
-      format: 'json',
-      is_incumbent: false,
-      state: person.state,
-      office: person.title.indexOf('Sen') > -1 ? 'S' : 'H',
-      district: person.district
-    },
-    async: true,
-    success: function(response) {
-      this.saveOpposition(person, response.results);
-    }.bind(this)
+  this.callApiPerPerson(person, sunlightCampaignFinanceUrl, this.saveOpposition, {
+    apikey: sunlightApiKey,
+    format: 'json',
+    is_incumbent: false,
+    state: person.state,
+    office: person.title.indexOf('Sen') > -1 ? 'S' : 'H',
+    district: person.district
   });
 };
 
 People.prototype.saveOpposition = function saveOpposition(person, result) {
   person.opposition = result;
+};
+
+People.prototype.addBills = function addBills(person) {
+  person.bills = [];
+  var queries = [];
+  var base = {
+    apikey: sunlightApiKey,
+    per_page: 5
+  };
+  queries.push(_.merge({sponsor_id: person.bioguide_id, 'history.enacted': true}, base));
+  queries.push(_.merge({cosponsor_ids: person.bioguide_id, 'history.enacted': true}, base));
+  queries.push(_.merge({sponsor_id: person.bioguide_id}, base));
+  queries.push(_.merge({cosponsor_ids: person.bioguide_id}, base));
+
+  _.forEach(queries, function(query) {
+    this.callApiPerPerson(person, sunlightBillUrl, this.saveBills, query);
+  }.bind(this));
+};
+
+People.prototype.saveBills = function saveBills(person, results) {
+  var filtered = _.map(results, function(result) {
+    return {
+      name: result.official_title,
+      date: result.last_action_at,
+      passed: result.history.enacted
+    };
+  });
+  person.bills = person.bills.concat(filtered);
+};
+
+People.prototype.callApiPerPerson = function callApiPerPerson(person, url, callback, data) {
+  $.ajax({
+    type: 'GET',
+    url: url,
+    dataType: 'json',
+    data: data,
+    async: true,
+    success: function(response) {
+      callback(person, response.results);
+    }.bind(this)
+  });
 };
 
 People.prototype.addAgesAndJobs = function addAgesAndJobs(){
