@@ -8,11 +8,11 @@ img {
 }
 
 .main {
-  /*position: fixed;
-  top: 0;
+  position: absolute;
+  top: 100px;
   right: 0;
   bottom: 0;
-  left: 0;*/
+  left: 0;
 }
 
 .header {
@@ -42,7 +42,8 @@ img {
 .splash {
   width: 100%;
   position: absolute;
-  top: 100px;
+  margin-top: 100px;
+  top: 0;
   right: 0;
   bottom: 0;
   left: 0;
@@ -74,6 +75,7 @@ button {
   border-radius: 50%;
   background: #E1E1E1;
   position: relative;
+  padding: 0;
 }
 
 button > div {
@@ -137,22 +139,25 @@ button > div {
 }
 
 .profile-summary {
+  position: absolute;
+  margin: 0 4% 5% 4%;
+  width: 92%;
+  height: 96%;
 }
 
 .main-content.small-version .profile-summary {
   box-shadow: 0 5px 10px #DCDCDC;
   border-radius: 10px;
-  width: 92%;
-  height: 96%;
-  margin: 0 4% 5% 4%;
 }
 
 .main-content.small-version .profile-image-wrapper {
-  /*height: calc(100% - 100px);*/
+  height: calc(100% - 150px);
 }
 
 .profile-image-wrapper {
   width: 100%;
+  text-align: center;
+  height: 900px;
 }
 
 .profile-image {
@@ -162,26 +167,52 @@ button > div {
 
 .bio-summary {
   width: 100%;
-  height: 100px;
+  height: 150px;
   font-size: 50px;
+  padding: 10px 20px;
 }
 
 .extended-bio {
-  display: none;
   font-size: 50px;
-  padding: 40px 50px 200px;
+  padding: 0 50px 200px;
 }
 
 .nobody-left {
   width: 100%;
   height: 100%;
+  position: absolute;
   text-align: center;
 }
 
 .start-text,
 .nobody-left-text {
   font-size: 60px;
+}
+
+.start-text {
+  margin: 150px 75px 0;
+}
+
+.nobody-left-text {
   margin: 200px auto;
+}
+
+#zip-code-input {
+  font-size: 50px;
+  margin-top: 50px;
+  text-align: center;
+}
+
+.zip-code-message {
+  text-align: center;
+}
+
+.zip-code-warning {
+  text-align: center;
+}
+
+.zip-code-warning > span {
+  color: red;
 }
 
 .start-button,
@@ -189,5 +220,26 @@ button > div {
   width: 400px;
   height: 400px;
   font-size: 100px;
+  text-align: center;
   box-shadow: 0 0 20px #888888;
+}
+
+.rotate-left {
+  transform: rotate(30deg) scale(0.8);
+  transition: 1s;
+  margin-left: 400px;
+  cursor: e-resize;
+  opacity: 0;
+}
+
+.rotate-right {
+  transform: rotate(-30deg) scale(0.8);
+  transition: 1s;
+  opacity: 0;
+  margin-left: -400px;
+  cursor: w-resize;
+}
+
+.ui-loader {
+  display: none;
 }

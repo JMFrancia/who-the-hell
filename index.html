@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
 
     <script src="jquery.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
     <script src="swipe.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.6.1/lodash.min.js"></script>
     <script src="people.js"></script>
@@ -21,11 +22,24 @@
 
     <div class="header">OK Congress</div>
 
-    <div style="position: absolute; top: 100px; left: 0; right: 0; bottom: 0;">
+    <div class="splash" style="display: block;">
+        <div class="start-text zip-code-message">
+          Enter your zip code to browse HOT Congress members in your area!!
+        </div>
+        <div class="start-text zip-code-warning" style="display: none;">
+          Enter a <span>REAL</span> zip code to browse HOT Congress members in your area!!
+        </div>
+        <div style="margin-bottom: 50px;">
+          <input id="zip-code-input" type="number" value="11203"></input>
+        </div>
+        <button class="start-button">Begin</button>
+    </div>
+
+    <div class="main" style="display: none;">
 
       <div class="main-content small-version">
         <div class="nobody-left" style="display: none;">
-          <div class="nobody-left-text">Nobody left to check out!</div>
+          <div class="nobody-left-text">Nobody left to caucus with!</div>
           <button class="result-button">Results</button>
         </div>
       </div>
@@ -43,7 +57,7 @@
         </button>
       </div>
 
-      <div class="small-control-panel">
+      <div>
         <button class="no-button small-button hidden">
           <div>
             <img src="images/no.png" />
