@@ -103,8 +103,6 @@ People.prototype.addIndustries = function addIndustries(){
           });
         });
 
-
-
           var blurbGen = new BlurbGenerator();
           person.blurb = blurbGen.getFirstLine() + ' ';
           if(person.industries){
@@ -112,8 +110,6 @@ People.prototype.addIndustries = function addIndustries(){
             person.industries[1].name + ', and ' + person.industries[2].name + '. ';
           }
           person.blurb += blurbGen.getThirdLine();
-
-
       }.bind(this)
     });
   });
@@ -159,7 +155,7 @@ People.prototype.generateSummaryTile = function generateSummaryTile(person){
   var daysInOffice = this.getDayDiff(firstDay, currentDate);
   var daysLeftInOffice = this.getDayDiff(currentDate, lastDay);
 
-  result = '<div class=repTile>' +
+  var result = '<div class=repTile>' +
               '<img class=repTilePortrait src="' + person.portrait + '"></img>' +
               '<div class=repInfo>' +
                 '<div class=repName>' + fullName + '</div>' +
@@ -171,7 +167,7 @@ People.prototype.generateSummaryTile = function generateSummaryTile(person){
                   '<a href=' + youtubeLink + '>' +
                       '<img class=icon src=images/yt_icon.png></img>' +
                   '</a>' +
-                  '<a href=' + contact_form + '>' +
+                  '<a href=' + contactForm + '>' +
                     '<img class=icon src=images/email_icon.png></img>' +
                   '</a>' +
                 '</div>' +
