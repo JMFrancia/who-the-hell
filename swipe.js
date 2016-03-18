@@ -5,23 +5,28 @@ var $controlPanel = null;
 
 $(document).ready(function onDocumentReady() {
 
-  addPeople();
-
-  // hideControlPanel(); // hide if there were no people found
-
   $controlPanel = $(".control-panel");
 
-  currentProfile = $(".main-content").children().last();
+  var hasPeople = addPeople(people)
 
-  addEventHandlers();
+  if (hasPeople) {
+    addEventHandlers();
+    currentProfile = $(".main-content").children().last();
+  } else {
+    hideControlPanel();
+  }
 
 });
 
-function addPeople() {
+function addPeople(profileArr) {
+
+  if (!profileArr.length) {
+    return false;
+  }
 
   var getProfileHTML = getProfileTpl();
 
-  people.forEach(function addPerson(profile, index, arr) {
+  profileArr.forEach(function addPerson(profile, index, arr) {
 
     var profileHTML = getProfileHTML(profile);
 
@@ -30,6 +35,8 @@ function addPeople() {
     $(".main-content").append(profileEl);
 
   });
+
+  return true;
 
 }
 
@@ -135,7 +142,9 @@ function getProfileTpl() {
           '<%= chamber %>',
         '</div>',
       '</div>',
-      '<div class="extended-bio"></div>',
+      '<div class="extended-bio">',
+        '<%= blurb %>',
+      '</div>',
     '</div>'].join('');
   return _.template(profileTplStr);
 }
@@ -176,7 +185,8 @@ var people = [{
   twitter_id: "SenSchumer",
   votesmart_id: 26976,
   website: "http://www.schumer.senate.gov",
-  youtube_id: "SenatorSchumer"
+  youtube_id: "SenatorSchumer",
+  blurb: "Looking for the constitutents of my dreams. I'm fond of Lawyers/Law Firms, Securities & Investment, and Real Estate. If you're looking for a good election cycle, give me a tap"
 }, {
   age: 67,
   bioguide_id: "M000087",
@@ -210,7 +220,8 @@ var people = [{
   twitter_id: "RepMaloney",
   votesmart_id: 26978,
   website: "http://maloney.house.gov",
-  youtube_id: null
+  youtube_id: null,
+  blurb: "Looking for the constitutents of my dreams. I enjoys receiving contributions from Securities & Investment, Lawyers/Law Firms, and Real Estate. Interested in what you see? Tap for more"
 }, {
   age: 57,
   bioguide_id: "G000555",
@@ -247,5 +258,6 @@ var people = [{
   twitter_id: "SenGillibrand",
   votesmart_id: 65147,
   website: "http://www.gillibrand.senate.gov",
-  youtube_id: "KirstenEGillibrand"
+  youtube_id: "KirstenEGillibrand",
+  blurb: "Are you the voter for me? I'm fond of Real Estate, Securities & Investment, and Insurance. Give me a tap and let's get democratic together"
 }];
