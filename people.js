@@ -146,18 +146,18 @@ People.prototype.generateBlurb = function generateBlurb(){
 function BlurbGenerator(){
   this.intros = [
     "Are you the voter for me?",
-    "Looking for the constitutents of my dreams.",
+    "Looking for the constituent of my dreams.",
   ];
   this.interests = [
     "I'm fond of ",
-    "I enjoys receiving contributions from ",
+    "I enjoy receiving contributions from ",
     "I've been known to enjoy ",
     "My turn ons include "
   ];
   this.conclusions = [
-    "If you're looking for a good election cycle, give me a tap",
-    "Interested in what you see? Tap for more",
-    "Give me a tap and let's get democratic together"
+    "If you're looking for a good election cycle, give me a tap!",
+    "Interested in what you see? Tap for more!",
+    "Give me a tap and let's get democratic together!"
   ]
 }
 

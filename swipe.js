@@ -1,7 +1,7 @@
 
 var $currentProfile = null;
 
-var $controlPanel, $smallButtons, $mainContent, $profiles;
+var $controlPanel, $smallButtons, $mainContent;
 
 $(document).ready(function onDocumentReady() {
 
@@ -11,11 +11,11 @@ $(document).ready(function onDocumentReady() {
 
   if (addPeople(people) === true) {
     $currentProfile = $mainContent.children().last();
+    addImageClickHandler($currentProfile);
+    addEventHandlers();
   } else {
-    hideControlPanel();
+    hideControls();
   }
-
-  addEventHandlers();
 
 });
 
@@ -34,6 +34,12 @@ function addPeople(people) {
   return true;
 }
 
+function addImageClickHandler($profile) {
+  return $profile.on("click", "img", function onClickProfileSummary() {
+    expandProfile($profile);
+  });
+}
+
 function addEventHandlers() {
 
   $(".start-button").click(function onStartButtonClick() {
@@ -43,19 +49,13 @@ function addEventHandlers() {
 
   $(".no-button").on("click", function onNoButtonClick() {
     dislikePerson($currentProfile);
-    $currentProfile = getNextProfile();
+    $currentProfile = getNextProfile($currentProfile);
   });
 
   $(".yes-button").on("click", function onYesButtonClick() {
     likePerson($currentProfile);
-    $currentProfile = getNextProfile();
+    $currentProfile = getNextProfile($currentProfile);
   });
-
-  $(".profile-summary").on("click", "img", function onClickProfileSummary() {
-    expandProfile($currentProfile);
-  });
-
-  // $profileImages.on("click", expandProfile);
 
   $mainContent.on("swiperight", dislikePerson);
   // $(".no-button").on("click", dislikePerson);
@@ -65,7 +65,7 @@ function addEventHandlers() {
 
 }
 
-function hideControlPanel() {
+function hideControls() {
   $controlPanel
     .removeClass("slideInUp")
     .addClass("animated slideOutDown");
@@ -73,7 +73,7 @@ function hideControlPanel() {
     .addClass("hidden");
 }
 
-function showControlPanel() {
+function showMainControlPanel() {
   if ($controlPanel.hasClass("slideOutDown")) {
     $controlPanel
       .removeClass("slideOutDown")
@@ -81,39 +81,39 @@ function showControlPanel() {
   }
 }
 
-function getNextProfile() {
-  $currentProfile.off();
-  var nextProfile = $currentProfile.prev().fadeIn(500);
-  if (nextProfile.index() === 0) {
-    console.log("No people left.");
-    hideControlPanel();
+function getNextProfile($profile) {
+  var $nextProfile;
+  $profile.off();
+  unexpandProfile($profile);
+  $nextProfile = $profile.prev().fadeIn(500);
+  if ($nextProfile.index() === 0) {
+    hideControls();
     return false;
   }
-  unexpandProfile();
-  return nextProfile;
+  addImageClickHandler($nextProfile);
+  return $nextProfile;
 }
 
 function likePerson() {
   $currentProfile.hide();
-  // $currentProfile.addClass("animated rotateOutUpRight liked");
+  // .addClass("animated rotateOutUpRight liked");
 }
 
 function dislikePerson() {
   $currentProfile.hide();
-  // $currentProfile.addClass("animated rotateOutUpLeft disliked");
+  //.addClass("animated rotateOutUpLeft disliked");
 }
 
 function expandProfile($profile) {
-  hideControlPanel();
-  $profile.find("extended-bio").fadeIn(1000);
+  hideControls();
+  $profile.find(".extended-bio").fadeIn(1000);
   $mainContent.removeClass("small-version");
   $smallButtons.removeClass("hidden");
 }
 
-function unexpandProfile() {
-  showControlPanel();
-  // $extendedBio
-    // .fadeOut(500);
+function unexpandProfile($profile) {
+  showMainControlPanel();
+  $profile.find(".extended-bio").fadeOut(500);
   $mainContent.addClass("small-version");
   $smallButtons.addClass("hidden");
 }
@@ -133,7 +133,7 @@ function getProfileTplFn() {
           '<%= chamber %>',
         '</div>',
       '</div>',
-      '<div class="extended-bio">',
+      '<div class="extended-bio" style="display: none;">',
         '<%= blurb %>',
       '</div>',
     '</div>'

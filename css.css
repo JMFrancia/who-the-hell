@@ -148,7 +148,7 @@ button > div {
 }
 
 .main-content.small-version .profile-image-wrapper {
-  /*height: calc(100% - 100px);*/
+  height: calc(100% - 150px);
 }
 
 .profile-image-wrapper {
@@ -162,14 +162,14 @@ button > div {
 
 .bio-summary {
   width: 100%;
-  height: 100px;
+  height: 150px;
   font-size: 50px;
+  padding: 10px 20px;
 }
 
 .extended-bio {
-  display: none;
   font-size: 50px;
-  padding: 40px 50px 200px;
+  padding: 0 50px 200px;
 }
 
 .nobody-left {
@@ -189,5 +189,6 @@ button > div {
   width: 400px;
   height: 400px;
   font-size: 100px;
+  text-align: center;
   box-shadow: 0 0 20px #888888;
 }
