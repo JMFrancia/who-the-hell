@@ -47,8 +47,10 @@ function addProfileEventHandlers($profile) {
 function addEventHandlers() {
 
   $(".start-button").click(function onStartButtonClick() {
-    var zipCode = $('#zip-code-input');
-    console.log(zipCode);
+    var zipCodeStr = $('#zip-code-input').val();
+    if (zipCodeStr.length !== 5 || _.isNumber(zipCodeStr *= 1) === false) {
+      return;
+    }
     $(".splash").fadeOut(300);
     $(".main").fadeIn(300);
   });
