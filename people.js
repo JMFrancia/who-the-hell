@@ -121,7 +121,7 @@ People.prototype.callApiPerPerson = function callApiPerPerson(person, url, callb
     url: url,
     dataType: 'json',
     data: data,
-    async: true,
+    async: false,
     success: function(response) {
       callback(person, response.results);
     }.bind(this)

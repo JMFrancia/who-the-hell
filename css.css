@@ -185,6 +185,10 @@ button > div {
   padding: 0 50px 200px;
 }
 
+.extended-bio p {
+  margin-bottom: 30px;
+}
+
 .nobody-left {
   width: 100%;
   height: 100%;
