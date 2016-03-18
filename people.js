@@ -108,7 +108,7 @@ People.prototype.addAgesAndJobs = function addAgesAndJobs(){
       }
     }
     person.age = age;
-    person.job = person.title.indexOf('Sen') > -1  ? 'Senator of ' : 'Representative of District ' + person.district + ' of ';
+    person.job = person.title.indexOf('Sen') > -1  ? 'Senator (' + person.party + ') of ' : 'Rep. (' + person.party + ') of District ' + person.district + ' of ';
     person.job += person.state_name;
   });
 }
