@@ -182,20 +182,20 @@ People.prototype.generateSummaryTile = function generateSummaryTile(person){
   var daysInOffice = this.getDayDiff(firstDay, currentDate);
   var daysLeftInOffice = this.getDayDiff(currentDate, lastDay);
 
-  var result = '<div class=repTile>' +
-              '<img class=repTilePortrait src="' + person.portrait + '"></img>' +
-              '<div class=repInfo>' +
-                '<div class=repName>' + fullName + '</div>' +
-                '<div class=daysInOffice>' + daysInOffice + ' days in office</div>' +
-                '<div class=repIcons>' +
-                  '<a href=' + facebookLink + '>' +
-                    '<img class=icon src=images/fb_icon.png></img>' +
+  var result = '<div class="repTile">' +
+              '<img class="repTilePortrait" src="' + person.portrait + '"></img>' +
+              '<div class="repInfo">' +
+                '<div class="repName">' + fullName + '</div>' +
+                '<div class="daysInOffice">' + daysInOffice + ' days in office</div>' +
+                '<div class="repIcons">' +
+                  '<a href="' + facebookLink + '"">' +
+                    '<img class="icon" src="images/fb_icon.png"></img>' +
                   '</a>' +
-                  '<a href=' + youtubeLink + '>' +
-                      '<img class=icon src=images/yt_icon.png></img>' +
+                  '<a href="' + youtubeLink + '">' +
+                      '<img class="icon" src="images/yt_icon.png"></img>' +
                   '</a>' +
                   '<a href=' + contactForm + '>' +
-                    '<img class=icon src=images/email_icon.png></img>' +
+                    '<img class="icon" src="images/email_icon.png"></img>' +
                   '</a>' +
                 '</div>' +
               '</div>' +
@@ -223,7 +223,6 @@ function BlurbGenerator(){
     "If you're looking for a good election cycle, swipe right",
     "Interested in what you see? Swipe right for me",
     "Give me a swipe and let's get democratic together"
-
   ]
 }
 
