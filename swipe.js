@@ -11,7 +11,7 @@ $(document).ready(function onDocumentReady() {
 
   if (addPeople(people) === true) {
     $currentProfile = $mainContent.children().last();
-    addImageClickHandler($currentProfile);
+    addProfileEventHandlers($currentProfile);
     addEventHandlers();
   } else {
     hideControls();
@@ -34,8 +34,12 @@ function addPeople(people) {
   return true;
 }
 
-function addImageClickHandler($profile) {
-  return $profile.on("click", "img", function onClickProfileSummary() {
+function addProfileEventHandlers($profile) {
+  $profile.on("swiperight", "img", dislikePerson);
+  $profile.on("swipeleft", likePerson);
+  // $(document).on("swiperight", "img", dislikePerson);
+  // $(document).on("swipeleft", likePerson);
+  $profile.on("click", "img", function onClickProfileSummary() {
     expandProfile($profile);
   });
 }
@@ -47,21 +51,9 @@ function addEventHandlers() {
     $(".main").fadeIn(300);
   });
 
-  $(".no-button").on("click", function onNoButtonClick() {
-    dislikePerson($currentProfile);
-    $currentProfile = getNextProfile($currentProfile);
-  });
+  $(".no-button").on("click", dislikePerson);
 
-  $(".yes-button").on("click", function onYesButtonClick() {
-    likePerson($currentProfile);
-    $currentProfile = getNextProfile($currentProfile);
-  });
-
-  $mainContent.on("swiperight", dislikePerson);
-  // $(".no-button").on("click", dislikePerson);
-
-  $mainContent.on("swipeleft", likePerson);
-  // $(".yes-button").on("click", likePerson);
+  $(".yes-button").on("click", likePerson);
 
 }
 
@@ -90,18 +82,22 @@ function getNextProfile($profile) {
     hideControls();
     return false;
   }
-  addImageClickHandler($nextProfile);
+  addProfileEventHandlers($nextProfile);
   return $nextProfile;
 }
 
 function likePerson() {
-  $currentProfile.hide();
-  // .addClass("animated rotateOutUpRight liked");
+  $currentProfile
+    .addClass("animated rotateOutUpLeft liked")
+    .hide(1000);
+  $currentProfile = getNextProfile($currentProfile);
 }
 
 function dislikePerson() {
-  $currentProfile.hide();
-  //.addClass("animated rotateOutUpLeft disliked");
+  $currentProfile
+    .addClass("animated rotateOutUpRight disliked")
+    .hide(1000);
+  $currentProfile = getNextProfile($currentProfile);
 }
 
 function expandProfile($profile) {
