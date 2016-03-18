@@ -1,3 +1,4 @@
+var people = [];
 
 var $currentProfile = null;
 
@@ -21,12 +22,12 @@ function onStartButtonClick() {
     return;
   }
   console.log(zipCode);
-  return;
+  people = new People(zipCode, false);
   browsePeople();
 }
 
 function browsePeople() {
-  if (addPeople(people) === true) {
+  if (addPeople(people.people) === true) {
     $currentProfile = $mainContent.children().last();
     addProfileEventHandlers($currentProfile);
     addButtonEventHandlers();
@@ -37,13 +38,13 @@ function browsePeople() {
   }
 }
 
-function addPeople(people) {
-  if (!people.length) {
+function addPeople(peopleArr) {
+  if (!peopleArr.length) {
     return false;
   }
-  var lastIndex = people.length - 1;
+  var lastIndex = peopleArr.length - 1;
   var getProfileHTML = getProfileTplFn();
-  people.forEach(function addPerson(profile, index) {
+  peopleArr.forEach(function addPerson(profile, index) {
     var profileHTML = getProfileHTML(profile);
     $(profileHTML)
       .toggle(index === lastIndex) // only show the last person
@@ -53,9 +54,9 @@ function addPeople(people) {
 }
 
 function addProfileEventHandlers($profile) {
-  $profile.on("swiperight", dislikePerson);
-  $profile.on("swipeleft", likePerson);
-  $profile.on("click", "img", function onClickProfileSummary() {
+  $profile.on("swiperight", likePerson);
+  $profile.on("swipeleft", dislikePerson);
+  $profile.on("click", function onClickProfileSummary() {
     expandProfile($profile);
   });
 }
@@ -63,6 +64,34 @@ function addProfileEventHandlers($profile) {
 function addButtonEventHandlers() {
   $(".no-button").on("click", dislikePerson);
   $(".yes-button").on("click", likePerson);
+  $(".results-button").on("click", function onResultsButtonClick() {
+    populateResultsPage();
+    $(".main").fadeOut(500);
+    $(".results-page").fadeIn(500);
+  });
+}
+
+function populateResultsPage() {
+  var html = '';
+  var page = $(".results-page");
+  var getHTML = people.generateSummaryTile;
+  people.people = addLikeOrDislikedKey(people.people);
+  people.people = _.filter(people.people, function(person) {
+    return !person.liked;
+  });
+  people.people.forEach(function addResultForPerson(person) {
+    html = getHTML.call(people, person);
+    html = $(html);
+    page.append(html);
+  })
+}
+
+function addLikeOrDislikedKey(peopleArr) {
+  $(".profile-summary").each(function addKey(index, el) {
+    console.log(el);
+    peopleArr[index].liked = ($(el).attr("liked") === "true");
+  });
+  return peopleArr;
 }
 
 function hideControls() {
@@ -95,15 +124,17 @@ function getNextProfile($profile) {
 }
 
 function likePerson() {
+  $currentProfile.attr("liked", true);
   $currentProfile
-    .addClass("animated rotateOutUpLeft liked")
+    .addClass("animated rotateOutUpRight liked")
     .hide(1000);
   $currentProfile = getNextProfile($currentProfile);
 }
 
 function dislikePerson() {
+  $currentProfile.attr("liked", false);
   $currentProfile
-    .addClass("animated rotateOutUpRight disliked")
+    .addClass("animated rotateOutUpLeft disliked")
     .hide(1000);
   $currentProfile = getNextProfile($currentProfile);
 }
@@ -126,15 +157,14 @@ function getProfileTplFn() {
   var profileTplStr = [
     '<div class="profile-summary">',
       '<div class="profile-image-wrapper">',
-      // '<img class="profile-image" src="<%= imageURL %>" />',
-        '<img class="profile-image" src="images/face.jpeg" />',
+      '<img class="profile-image" src="<%= portrait %>" />',
       '</div>',
       '<div class="bio-summary">',
         '<div>',
           '<%= first_name %>&nbsp;<%= last_name %>, <%= age %>',
         '</div>',
         '<div>',
-          '<%= chamber %>',
+          '<%= job %>',
         '</div>',
       '</div>',
       '<div class="extended-bio" style="display: none;">',
@@ -144,132 +174,3 @@ function getProfileTplFn() {
   ].join('');
   return _.template(profileTplStr);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var people = [{
-  age: 63,
-  bioguide_id: "S000148",
-  birthday: "1950-11-23",
-  chamber: "senate",
-  contact_form: "http://www.schumer.senate.gov/Contact/email-chuck",
-  crp_id: "N00001093",
-  district: null,
-  facebook_id: "15771239406",
-  fax: "202-228-3027",
-  first_name: "Charles",
-  gender: "M",
-  govtrack_id: "300087",
-  icpsr_id: 14858,
-  in_office: true,
-  last_name: "Schumer",
-  lis_id: "S270",
-  middle_name: "E.",
-  name_suffix: null,
-  nickname: "Chuck",
-  oc_email: "Sen.Schumer@opencongress.org",
-  ocd_id: "ocd-division/country:us/state:ny",
-  office: "322 Hart Senate Office Building",
-  party: "D",
-  phone: "202-224-6542",
-  senate_class: 3,
-  state: "NY",
-  state_name: "New York",
-  state_rank: "senior",
-  term_end: "2017-01-03",
-  term_start: "2011-01-05",
-  thomas_id: "01036",
-  title: "Sen",
-  twitter_id: "SenSchumer",
-  votesmart_id: 26976,
-  website: "http://www.schumer.senate.gov",
-  youtube_id: "SenatorSchumer",
-  blurb: "Looking for the constitutents of my dreams. I'm fond of Lawyers/Law Firms, Securities & Investment, and Real Estate. If you're looking for a good election cycle, give me a tap"
-}, {
-  age: 67,
-  bioguide_id: "M000087",
-  birthday: "1946-02-19",
-  chamber: "house",
-  contact_form: "https://maloney.house.gov/contact-me/email-me",
-  crp_id: "N00000078",
-  district: 12,
-  facebook_id: "397176447066236",
-  fax: "202-225-4709",
-  first_name: "Carolyn",
-  gender: "F",
-  govtrack_id: "400251",
-  icpsr_id: 29379,
-  in_office: true,
-  last_name: "Maloney",
-  middle_name: "B.",
-  name_suffix: null,
-  nickname: null,
-  oc_email: "Rep.Maloney@opencongress.org",
-  ocd_id: "ocd-division/country:us/state:ny/cd:12",
-  office: "2308 Rayburn House Office Building",
-  party: "D",
-  phone: "202-225-7944",
-  state: "NY",
-  state_name: "New York",
-  term_end: "2017-01-03",
-  term_start: "2015-01-06",
-  thomas_id: "00729",
-  title: "Rep",
-  twitter_id: "RepMaloney",
-  votesmart_id: 26978,
-  website: "http://maloney.house.gov",
-  youtube_id: null,
-  blurb: "Looking for the constitutents of my dreams. I enjoys receiving contributions from Securities & Investment, Lawyers/Law Firms, and Real Estate. Interested in what you see? Tap for more"
-}, {
-  age: 57,
-  bioguide_id: "G000555",
-  birthday: "1966-12-09",
-  chamber: "senate",
-  contact_form: "http://www.gillibrand.senate.gov/contact/",
-  crp_id: "N00027658",
-  district: null,
-  facebook_id: "KirstenGillibrand",
-  fax: "202-225-1168",
-  first_name: "Kirsten",
-  gender: "F",
-  govtrack_id: "412223",
-  icpsr_id: 20735,
-  in_office: true,
-  last_name: "Gillibrand",
-  lis_id: "S331",
-  middle_name: "E.",
-  name_suffix: null,
-  nickname: null,
-  oc_email: "Sen.Gillibrand@opencongress.org",
-  ocd_id: "ocd-division/country:us/state:ny",
-  office: "478 Russell Senate Office Building",
-  party: "D",
-  phone: "202-224-4451",
-  senate_class: 1,
-  state: "NY",
-  state_name: "New York",
-  state_rank: "junior",
-  term_end: "2019-01-03",
-  term_start: "2013-01-03",
-  thomas_id: "01866",
-  title: "Sen",
-  twitter_id: "SenGillibrand",
-  votesmart_id: 65147,
-  website: "http://www.gillibrand.senate.gov",
-  youtube_id: "KirstenEGillibrand",
-  blurb: "Are you the voter for me? I'm fond of Real Estate, Securities & Investment, and Insurance. Give me a tap and let's get democratic together"
-}];

@@ -5,6 +5,7 @@ var openSecretsApiKey = '35776fd4c0bb1d6f8153182389162f86';
 var sunlightLegislatorLocateUrl = 'http://congress.api.sunlightfoundation.com/legislators/locate/';
 var sunlightAllCongressUrl = 'http://congress.api.sunlightfoundation.com/legislators/';
 var sunlightCampaignFinanceUrl = 'http://realtime.influenceexplorer.com/api/candidates/';
+var sunlightBillUrl = 'http://congress.api.sunlightfoundation.com/bills/';
 
 function People(zip, useOpenSecretsApi) {
   useOpenSecretsApi = useOpenSecretsApi || false;
@@ -67,31 +68,64 @@ People.prototype.addPortraits = function addPortraits(){
   _.forEach(this.people, function(person){
     person.portrait = 'https://www.govtrack.us/data/photos/' + person.govtrack_id + '.jpeg';
     this.addOpposition(person);
+    this.addBills(person);
   }.bind(this));
 };
 
 People.prototype.addOpposition = function addOpposition(person) {
-  $.ajax({
-    type: 'GET',
-    url: sunlightCampaignFinanceUrl,
-    dataType: 'json',
-    data: {
-      apikey: sunlightApiKey,
-      format: 'json',
-      is_incumbent: false,
-      state: person.state,
-      office: person.title.indexOf('Sen') > -1 ? 'S' : 'H',
-      district: person.district
-    },
-    async: true,
-    success: function(response) {
-      this.saveOpposition(person, response.results);
-    }.bind(this)
+  this.callApiPerPerson(person, sunlightCampaignFinanceUrl, this.saveOpposition, {
+    apikey: sunlightApiKey,
+    format: 'json',
+    is_incumbent: false,
+    state: person.state,
+    office: person.title.indexOf('Sen') > -1 ? 'S' : 'H',
+    district: person.district
   });
 };
 
 People.prototype.saveOpposition = function saveOpposition(person, result) {
   person.opposition = result;
+};
+
+People.prototype.addBills = function addBills(person) {
+  person.bills = [];
+  var queries = [];
+  var base = {
+    apikey: sunlightApiKey,
+    per_page: 5
+  };
+  queries.push(_.merge({sponsor_id: person.bioguide_id, 'history.enacted': true}, base));
+  queries.push(_.merge({cosponsor_ids: person.bioguide_id, 'history.enacted': true}, base));
+  queries.push(_.merge({sponsor_id: person.bioguide_id}, base));
+  queries.push(_.merge({cosponsor_ids: person.bioguide_id}, base));
+
+  _.forEach(queries, function(query) {
+    this.callApiPerPerson(person, sunlightBillUrl, this.saveBills, query);
+  }.bind(this));
+};
+
+People.prototype.saveBills = function saveBills(person, results) {
+  var filtered = _.map(results, function(result) {
+    return {
+      name: result.official_title,
+      date: result.last_action_at,
+      passed: result.history.enacted
+    };
+  });
+  person.bills = person.bills.concat(filtered);
+};
+
+People.prototype.callApiPerPerson = function callApiPerPerson(person, url, callback, data) {
+  $.ajax({
+    type: 'GET',
+    url: url,
+    dataType: 'json',
+    data: data,
+    async: true,
+    success: function(response) {
+      callback(person, response.results);
+    }.bind(this)
+  });
 };
 
 People.prototype.addAgesAndJobs = function addAgesAndJobs(){
@@ -108,7 +142,7 @@ People.prototype.addAgesAndJobs = function addAgesAndJobs(){
       }
     }
     person.age = age;
-    person.job = person.title.indexOf('Sen') > -1  ? 'Senator of ' : 'Representative of District ' + person.district + ' of ';
+    person.job = person.title.indexOf('Sen') > -1  ? 'Senator (' + person.party + ') of ' : 'Rep. (' + person.party + ') of District ' + person.district + ' of ';
     person.job += person.state_name;
   });
 }
@@ -130,8 +164,6 @@ People.prototype.addIndustries = function addIndustries(){
           });
         });
 
-
-
           var blurbGen = new BlurbGenerator();
           person.blurb = blurbGen.getFirstLine() + ' ';
           if(person.industries){
@@ -139,8 +171,6 @@ People.prototype.addIndustries = function addIndustries(){
             person.industries[1].name + ', and ' + person.industries[2].name + '. ';
           }
           person.blurb += blurbGen.getThirdLine();
-
-
       }.bind(this)
     });
   });
@@ -170,10 +200,56 @@ People.prototype.generateBlurb = function generateBlurb(){
     this.blurb += this.getThirdLine();
 }
 
+People.prototype.generateSummaryTile = function generateSummaryTile(person){
+  var currentDate = new Date();
+  var youtubeLink = 'https://www.youtube.com/user/' + person.youtube_id;
+  var facebookLink = 'https://facebook.com/' + person.facebook_id;
+  var contactForm = person.contact_form
+
+  var website = person.website;
+  var fullName = person.first_name + ' ' + person.last_name;
+  var lastDay = person.term_end.split('-');
+      lastDay = new Date(lastDay[0], lastDay[1], lastDay[2]);
+
+  var firstDay = person.term_start.split('-');
+      firstDay = new Date(firstDay[0], firstDay[1], firstDay[2]);
+  var daysInOffice = this.getDayDiff(firstDay, currentDate);
+  var daysLeftInOffice = this.getDayDiff(currentDate, lastDay);
+
+  var years = Math.round( (daysInOffice / 365) * 10 ) / 10;
+
+  var result = '<div class="repTile">' +
+              '<div class="repTilePortraitWrapper">' +
+              '<img class="repTilePortrait" src="' + person.portrait + '"></img>' +
+              '</div>' +
+              '<div class="repInfo">' +
+                '<div class="repName">' + fullName + '</div>' +
+                '<div class="daysInOffice">' + years + ' years in office</div>' +
+                '<div class="repIcons">' +
+                  '<a href="' + facebookLink + '"">' +
+                    '<img class="icon" src="images/fb_icon.png"></img>' +
+                  '</a>' +
+                  '<a href="' + youtubeLink + '">' +
+                      '<img class="icon" src="images/yt_icon.png"></img>' +
+                  '</a>' +
+                  '<a href=' + contactForm + '>' +
+                    '<img class="icon" src="images/email_icon.png"></img>' +
+                  '</a>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+  return result;
+}
+
+
+People.prototype.getDayDiff = function getDayDiff(first, second){
+   return Math.round(Math.floor((second-first)/(1000*60*60*24)));
+}
+
 function BlurbGenerator(){
   this.intros = [
     "Are you the voter for me?",
-    "Looking for the constituent of my dreams.",
+    "Looking for the constitutents of my dreams."
   ];
   this.interests = [
     "I'm fond of ",
@@ -182,9 +258,9 @@ function BlurbGenerator(){
     "My turn ons include "
   ];
   this.conclusions = [
-    "If you're looking for a good election cycle, give me a tap!",
-    "Interested in what you see? Tap for more!",
-    "Give me a tap and let's get democratic together!"
+    "If you're looking for a good election cycle, swipe right",
+    "Interested in what you see? Swipe right for me",
+    "Give me a swipe and let's get democratic together"
   ]
 }
 
