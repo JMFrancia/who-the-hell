@@ -168,7 +168,9 @@ function getProfileTplFn() {
         '</div>',
       '</div>',
       '<div class="extended-bio" style="display: none;">',
-        '<%= blurb %>',
+        '<div style="margin-bottom: 20px;>"<%= blurb %></div>',
+        '<div style="margin-bottom: 20px; font-weight: bold;">Here are some bills I supported:</div>',
+        '<% _.forEach(bills, function(bill) { %><p><%- bill.name %></p><% }); %>',
       '</div>',
     '</div>'
   ].join('');
